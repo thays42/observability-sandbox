@@ -8,12 +8,12 @@ This is an observability stack built with Docker Compose, consisting of Promethe
 
 ## Architecture
 
-The stack consists of two main services running in Docker containers:
+The stack consists of three main services running in Docker containers:
 
 - **Prometheus**: Metrics collection and storage (port 9090)
   - Configuration: [prometheus/prometheus.yml](prometheus/prometheus.yml)
   - Data persisted in `prometheus-data` volume
-  - Scrapes itself every 15 seconds by default
+  - Scrapes itself and demo-fastapi-rolldice every 15 seconds by default
 
 - **Grafana**: Metrics visualization and dashboards (port 3000)
   - Configuration: [grafana/grafana.ini](grafana/grafana.ini)
@@ -22,7 +22,13 @@ The stack consists of two main services running in Docker containers:
   - Pre-configured with Prometheus as default datasource
   - Anonymous viewing enabled, admin credentials: admin/admin
 
-Both services communicate via the `monitoring` Docker network.
+- **demo-fastapi-rolldice**: Demo FastAPI application (port 8001)
+  - Source: [apps/dice-roller/](apps/dice-roller/)
+  - Python 3.13 managed with uv
+  - Provides `/roll/{dice}` endpoint (e.g., `/roll/3d6`)
+  - Exposes Prometheus metrics at `/metrics` using prometheus-fastapi-instrumentator
+
+All services communicate via the `monitoring` Docker network.
 
 ## Common Commands
 
@@ -44,6 +50,7 @@ docker compose logs -f
 # Specific service
 docker compose logs -f prometheus
 docker compose logs -f grafana
+docker compose logs -f demo-fastapi-rolldice
 ```
 
 ### Restarting After Configuration Changes
@@ -58,6 +65,7 @@ docker compose restart grafana
 ### Accessing Services
 - Prometheus UI: http://localhost:9090
 - Grafana UI: http://localhost:3000
+- Demo Dice Roller API: http://localhost:8001 (metrics at http://localhost:8001/metrics)
 
 ## Configuration Structure
 

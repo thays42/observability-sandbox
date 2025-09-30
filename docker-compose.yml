@@ -29,6 +29,17 @@ services:
     depends_on:
       - prometheus
 
+  demo-fastapi-rolldice:
+    build:
+      context: ./apps/dice-roller
+      dockerfile: Dockerfile
+    container_name: demo-fastapi-rolldice
+    ports:
+      - "8001:8001"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
 volumes:
   prometheus-data:
   grafana-data:
