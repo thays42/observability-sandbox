@@ -40,6 +40,17 @@ services:
       - monitoring
     restart: unless-stopped
 
+  shiny-curl-gui:
+    build:
+      context: ./apps/shiny-curl-gui
+      dockerfile: Dockerfile
+    container_name: shiny-curl-gui
+    ports:
+      - "8002:3838"
+    networks:
+      - monitoring
+    restart: unless-stopped
+
 volumes:
   prometheus-data:
   grafana-data:

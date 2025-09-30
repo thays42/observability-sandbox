@@ -8,7 +8,7 @@ This is an observability stack built with Docker Compose, consisting of Promethe
 
 ## Architecture
 
-The stack consists of three main services running in Docker containers:
+The stack consists of four main services running in Docker containers:
 
 - **Prometheus**: Metrics collection and storage (port 9090)
   - Configuration: [prometheus/prometheus.yml](prometheus/prometheus.yml)
@@ -27,6 +27,14 @@ The stack consists of three main services running in Docker containers:
   - Python 3.13 managed with uv
   - Provides `/roll/{dice}` endpoint (e.g., `/roll/3d6`)
   - Exposes Prometheus metrics at `/metrics` using prometheus-fastapi-instrumentator
+
+- **shiny-curl-gui**: Demo R Shiny application (port 8002)
+  - Source: [apps/shiny-curl-gui/](apps/shiny-curl-gui/)
+  - R 4.5.1 (rocker/r-ver base image) with httr2 for HTTP requests
+  - GUI for making HTTP requests (GET, POST, PUT, DELETE)
+  - Displays formatted response with status code, headers, and body
+  - Uses binary packages from Posit Package Manager for faster builds on ARM
+  - TODO: Add request body and custom headers support
 
 All services communicate via the `monitoring` Docker network.
 
@@ -51,6 +59,7 @@ docker compose logs -f
 docker compose logs -f prometheus
 docker compose logs -f grafana
 docker compose logs -f demo-fastapi-rolldice
+docker compose logs -f shiny-curl-gui
 ```
 
 ### Restarting After Configuration Changes
@@ -66,6 +75,7 @@ docker compose restart grafana
 - Prometheus UI: http://localhost:9090
 - Grafana UI: http://localhost:3000
 - Demo Dice Roller API: http://localhost:8001 (metrics at http://localhost:8001/metrics)
+- Shiny cURL GUI: http://localhost:8002
 
 ## Configuration Structure
 
