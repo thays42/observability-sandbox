@@ -6,8 +6,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install shiny, httr2, logger, and uuid from Posit Package Manager (pre-built binaries for Ubuntu)
-RUN R -e "install.packages(c('shiny', 'httr2', 'logger', 'uuid'), repos='https://packagemanager.posit.co/cran/__linux__/noble/latest')"
+# Install shiny, httr2, logger, uuid, and jsonlite from Posit Package Manager (pre-built binaries for Ubuntu)
+RUN R -e "install.packages(c('shiny', 'httr2', 'logger', 'uuid', 'jsonlite'), repos='https://packagemanager.posit.co/cran/__linux__/noble/latest')"
 
 # Create app directory
 RUN mkdir -p /app

@@ -2,13 +2,16 @@ library(shiny)
 library(httr2)
 library(logger)
 library(uuid)
+library(jsonlite)
 
-# Configure logger for JSON output to stdout
-log_layout(layout_json())
+# Configure logger with custom JSON layout (only level, session_id, message)
+log_formatter(formatter_json)
 log_threshold(DEBUG)
+log_layout(layout_json_parser(fields = c("level")))
 
-# Log application startup
-log_info("Shiny application ready and accessible", app = "shiny-curl-gui")
+
+# Log application startup (no session_id at this point)
+log_info(msg = "Shiny application ready and accessible")
 
 # UI Definition
 ui <- fluidPage(
@@ -56,11 +59,11 @@ server <- function(input, output, session) {
   session_id <- UUIDgenerate()
 
   # Log session start
-  log_info("Session started", session_id = session_id, app = "shiny-curl-gui")
+  log_info(msg = "Session started", session_id = session_id)
 
   # Log session end when session closes
   onSessionEnded(function() {
-    log_info("Session ended", session_id = session_id, app = "shiny-curl-gui")
+    log_info(msg = "Session ended", session_id = session_id)
   })
 
   # Reactive value to store response
@@ -71,11 +74,11 @@ server <- function(input, output, session) {
     }
 
     # Log HTTP request initiation
-    log_debug("HTTP request initiated",
+    log_debug(
+      msg = "HTTP request initiated",
       session_id = session_id,
       method = input$action,
-      url = input$url,
-      app = "shiny-curl-gui"
+      url = input$url
     )
 
     tryCatch(
@@ -91,28 +94,28 @@ server <- function(input, output, session) {
 
         # Log response with appropriate level based on status code
         if (status_code >= 500) {
-          log_error("HTTP response received",
+          log_error(
+            msg = "HTTP response received",
             session_id = session_id,
             method = input$action,
             url = input$url,
-            status_code = status_code,
-            app = "shiny-curl-gui"
+            status_code = status_code
           )
         } else if (status_code >= 400) {
-          log_warn("HTTP response received",
+          log_warn(
+            msg = "HTTP response received",
             session_id = session_id,
             method = input$action,
             url = input$url,
-            status_code = status_code,
-            app = "shiny-curl-gui"
+            status_code = status_code
           )
         } else {
-          log_info("HTTP response received",
+          log_info(
+            msg = "HTTP response received",
             session_id = session_id,
             method = input$action,
             url = input$url,
-            status_code = status_code,
-            app = "shiny-curl-gui"
+            status_code = status_code
           )
         }
 
