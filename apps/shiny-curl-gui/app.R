@@ -1,5 +1,14 @@
 library(shiny)
 library(httr2)
+library(logger)
+library(uuid)
+
+# Configure logger for JSON output to stdout
+log_layout(layout_json())
+log_threshold(DEBUG)
+
+# Log application startup
+log_info("Shiny application ready and accessible", app = "shiny-curl-gui")
 
 # UI Definition
 ui <- fluidPage(
@@ -43,6 +52,17 @@ ui <- fluidPage(
 
 # Server Logic
 server <- function(input, output, session) {
+  # Generate unique session ID
+  session_id <- UUIDgenerate()
+
+  # Log session start
+  log_info("Session started", session_id = session_id, app = "shiny-curl-gui")
+
+  # Log session end when session closes
+  onSessionEnded(function() {
+    log_info("Session ended", session_id = session_id, app = "shiny-curl-gui")
+  })
+
   # Reactive value to store response
   response_text <- eventReactive(input$run, {
     # Validate URL
@@ -50,19 +70,51 @@ server <- function(input, output, session) {
       return("Error: URL cannot be empty")
     }
 
+    # Log HTTP request initiation
+    log_debug("HTTP request initiated",
+      session_id = session_id,
+      method = input$action,
+      url = input$url,
+      app = "shiny-curl-gui"
+    )
+
     tryCatch(
       {
         # Build request based on HTTP method
         req <- request(input$url)
 
-        message("Method selected:", input$action, "\n")
-        message("URL:", input$url, "\n")
-
         resp <- req |>
           req_method(input$action) |>
           req_perform()
 
-        message("Response received, status:", resp_status(resp), "\n")
+        status_code <- resp_status(resp)
+
+        # Log response with appropriate level based on status code
+        if (status_code >= 500) {
+          log_error("HTTP response received",
+            session_id = session_id,
+            method = input$action,
+            url = input$url,
+            status_code = status_code,
+            app = "shiny-curl-gui"
+          )
+        } else if (status_code >= 400) {
+          log_warn("HTTP response received",
+            session_id = session_id,
+            method = input$action,
+            url = input$url,
+            status_code = status_code,
+            app = "shiny-curl-gui"
+          )
+        } else {
+          log_info("HTTP response received",
+            session_id = session_id,
+            method = input$action,
+            url = input$url,
+            status_code = status_code,
+            app = "shiny-curl-gui"
+          )
+        }
 
         # Format response
         status_line <- sprintf("Status Code: %d", resp_status(resp))

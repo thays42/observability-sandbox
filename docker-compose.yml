@@ -13,12 +13,10 @@ services:
     networks:
       - monitoring
     restart: unless-stopped
-    depends_on:
-      - loki
     logging:
       driver: loki
       options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
+        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
         loki-external-labels: "job=prometheus,container_name=prometheus"
 
   loki:
@@ -48,11 +46,10 @@ services:
     restart: unless-stopped
     depends_on:
       - prometheus
-      - loki
     logging:
       driver: loki
       options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
+        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
         loki-external-labels: "job=grafana,container_name=grafana"
 
   demo-fastapi-rolldice:
@@ -65,12 +62,10 @@ services:
     networks:
       - monitoring
     restart: unless-stopped
-    depends_on:
-      - loki
     logging:
       driver: loki
       options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
+        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
         loki-external-labels: "job=demo-fastapi-rolldice,container_name=demo-fastapi-rolldice"
 
   shiny-curl-gui:
@@ -83,12 +78,10 @@ services:
     networks:
       - monitoring
     restart: unless-stopped
-    depends_on:
-      - loki
     logging:
       driver: loki
       options:
-        loki-url: "http://loki:3100/loki/api/v1/push"
+        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
         loki-external-labels: "job=shiny-curl-gui,container_name=shiny-curl-gui"
 
 volumes:

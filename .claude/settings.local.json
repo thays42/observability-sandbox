@@ -1,7 +1,15 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(docker inspect:*)",
+      "Bash(docker logs:*)",
+      "Bash(python3:*)",
+      "Bash(docker exec:*)",
+      "Bash(curl http://localhost:3100/ready)",
+      "Bash(docker compose logs:*)",
+      "Bash(docker kill:*)",
+      "Bash(docker compose:*)"
     ],
     "deny": [],
     "ask": []
