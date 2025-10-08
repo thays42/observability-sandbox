@@ -22,11 +22,6 @@ services:
       timeout: 3s
       retries: 3
       start_period: 5s
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
-        loki-external-labels: "job=demo-fastapi-rolldice,container_name=demo-fastapi-rolldice"
 
 networks:
   monitoring:

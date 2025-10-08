@@ -19,11 +19,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
-        loki-external-labels: "job=prometheus,container_name=prometheus"
 
   loki:
     image: grafana/loki:3.5.0
@@ -84,11 +79,21 @@ services:
       timeout: 5s
       retries: 3
       start_period: 5s
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
-        loki-external-labels: "job=otel-collector,container_name=otel-collector"
+
+  promtail:
+    image: grafana/promtail:3.5.0
+    container_name: promtail
+    volumes:
+      - ./promtail/promtail-config.yml:/etc/promtail/config.yml
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: -config.file=/etc/promtail/config.yml
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      loki:
+        condition: service_healthy
 
   grafana:
     image: grafana/grafana:12.2
@@ -115,11 +120,6 @@ services:
       timeout: 5s
       retries: 3
       start_period: 15s
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
-        loki-external-labels: "job=grafana,container_name=grafana"
 
 volumes:
   prometheus-data:

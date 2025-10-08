@@ -20,11 +20,6 @@ services:
       timeout: 5s
       retries: 5
       start_period: 20s
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
-        loki-external-labels: "job=shiny-curl-gui,container_name=shiny-curl-gui"
 
 networks:
   monitoring:
