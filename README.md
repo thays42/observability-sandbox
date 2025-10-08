@@ -15,52 +15,53 @@ A complete observability solution built with Docker Compose, providing metrics, 
 ### Core Observability Stack
 
 #### Prometheus (Metrics)
-**Port:** 9090
-**Purpose:** Time-series metrics collection and storage
 
 Prometheus scrapes metrics from instrumented applications at regular intervals (default: 15s). It stores these metrics in a local time-series database and provides a powerful query language (PromQL) for analysis.
 
+- **Purpose:** Time-series metrics collection and storage
+- **Port:** 9090
 - **Configuration:** [stack/prometheus/prometheus.yml](stack/prometheus/prometheus.yml)
 - **Storage:** Persistent volume `stack_prometheus-data`
 - **Targets:** Self-monitoring + demo apps with `/metrics` endpoints
 
 #### Loki (Logs)
-**Port:** 3100
-**Purpose:** Log aggregation and storage
+
 
 Loki is a horizontally-scalable, highly-available log aggregation system inspired by Prometheus. Unlike traditional log systems, it indexes only metadata (labels) rather than full-text, making it cost-effective.
 
+- **Purpose:** Log aggregation and storage
+- **Port:** 3100
 - **Configuration:** [stack/loki/loki-config.yml](stack/loki/loki-config.yml)
 - **Storage:** Persistent volume `stack_loki-data`
 - **Retention:** 31 days (744 hours)
 - **Log Sources:** Receives logs from Grafana Alloy
 
 #### Tempo (Traces)
-**Port:** 3200
-**Purpose:** Distributed tracing storage
 
 Tempo stores distributed traces, allowing you to track requests as they flow through your system. It integrates with Loki and Prometheus for correlated observability.
 
+- **Purpose:** Distributed tracing storage
+- **Port:** 3200
 - **Configuration:** [stack/tempo/tempo-config.yml](stack/tempo/tempo-config.yml)
 - **Storage:** Persistent volume `stack_tempo-data`
 - **Retention:** 48 hours
 - **Protocol:** Receives traces via OpenTelemetry Protocol (OTLP)
 
 #### OpenTelemetry Collector (Trace Gateway)
-**Ports:** 4317 (gRPC), 4318 (HTTP)
-**Purpose:** Trace collection and forwarding
 
 Acts as a centralized gateway for trace data. Applications send traces to the collector, which processes and forwards them to Tempo.
 
+- **Purpose:** Trace collection and forwarding
+- **Ports:** 4317 (gRPC), 4318 (HTTP)
 - **Configuration:** [stack/otel-collector/otel-collector-config.yml](stack/otel-collector/otel-collector-config.yml)
 - **Features:** Batch processing, memory limiting, protocol translation
 
 #### Grafana Alloy (Log Collection)
-**Port:** 12345 (UI)
-**Purpose:** Log collection agent
 
 Modern replacement for Promtail, Alloy discovers Docker containers automatically and streams their logs to Loki. It parses JSON logs and extracts trace correlation fields.
 
+- **Purpose:** Log collection agent
+- **Port:** 12345 (UI)
 - **Configuration:** [stack/alloy/config.alloy](stack/alloy/config.alloy)
 - **Discovery:** Automatic Docker container detection
 - **Filtering:** Collects logs only from specified demo apps
@@ -68,11 +69,11 @@ Modern replacement for Promtail, Alloy discovers Docker containers automatically
 - **Parsing:** Extracts `trace_id`, `span_id`, `level` from JSON logs
 
 #### Grafana (Visualization)
-**Port:** 3000
-**Purpose:** Unified observability dashboard
 
 Grafana provides visualization for metrics, logs, and traces. Pre-configured datasources enable seamless correlation between all three pillars of observability.
 
+- **Purpose:** Unified observability dashboard
+- **Port:** 3000
 - **Configuration:** [stack/grafana/grafana.ini](stack/grafana/grafana.ini)
 - **Datasources:** Prometheus (default), Loki, Tempo
 - **Credentials:** admin/admin
@@ -81,11 +82,12 @@ Grafana provides visualization for metrics, logs, and traces. Pre-configured dat
 ## Demo Applications
 
 ### dice-roller (FastAPI + Python)
-**Port:** 8001
-**Language:** Python 3.13 (managed with uv)
-**Framework:** FastAPI
 
 A simple REST API that simulates dice rolls, demonstrating the three pillars of observability.
+
+- **Port:** 8001
+- **Language:** Python 3.13 (managed with uv)
+- **Framework:** FastAPI
 
 **Endpoints:**
 - `GET /roll/{dice}` - Roll dice (e.g., `/roll/3d6` rolls three 6-sided dice)
@@ -108,11 +110,12 @@ curl http://localhost:8001/metrics
 ```
 
 ### shiny-curl-gui (R Shiny)
-**Port:** 8002
-**Language:** R 4.5.1
-**Framework:** Shiny
 
 An interactive web GUI for making HTTP requests, showcasing manual OpenTelemetry instrumentation in R.
+
+- **Port:** 8002
+- **Language:** R 4.5.1
+- **Framework:** Shiny
 
 **Features:**
 - HTTP methods: GET, POST, PUT, DELETE
@@ -135,8 +138,6 @@ open http://localhost:8002
 
 # Use the GUI to make requests to:
 # - http://localhost:8001/roll/2d6 (GET)
-# - https://api.github.com/users/github (GET)
-# - Any other HTTP endpoint
 ```
 
 ## Data Flow Architecture
