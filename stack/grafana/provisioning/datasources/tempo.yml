@@ -14,12 +14,10 @@ datasources:
         datasourceUid: loki
         spanStartTimeShift: '-1h'
         spanEndTimeShift: '1h'
-        tags:
-          - key: 'service.name'
-            value: 'service_name'
         filterByTraceID: true
         filterBySpanID: false
-        customQuery: false
+        customQuery: true
+        query: '{job=~".+"} | json | trace_id=`$${__trace.traceId}`'
       tracesToMetrics:
         datasourceUid: prometheus
         spanStartTimeShift: '-1h'

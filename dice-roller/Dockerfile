@@ -12,5 +12,5 @@ RUN uv sync --frozen --no-dev
 # Expose the port
 EXPOSE 8001
 
-# Run the application
-CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
+# Run the application with OpenTelemetry automatic instrumentation
+CMD ["uv", "run", "opentelemetry-instrument", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]

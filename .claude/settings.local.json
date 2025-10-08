@@ -9,7 +9,8 @@
       "Bash(curl http://localhost:3100/ready)",
       "Bash(docker compose logs:*)",
       "Bash(docker kill:*)",
-      "Bash(docker compose:*)"
+      "Bash(docker compose:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []
