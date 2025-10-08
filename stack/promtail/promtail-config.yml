@@ -7,6 +7,9 @@ positions:
 
 clients:
   - url: http://loki:3100/loki/api/v1/push
+    # Disable structured metadata to avoid Loki errors
+    headers:
+      X-Scope-OrgID: fake
 
 scrape_configs:
   - job_name: docker
@@ -15,10 +18,10 @@ scrape_configs:
         refresh_interval: 5s
 
     relabel_configs:
-      # Only scrape containers from our compose projects
+      # Drop containers from stack project (infrastructure)
       - source_labels: ['__meta_docker_container_label_com_docker_compose_project']
-        regex: '(stack|dice-roller|shiny-curl-gui)'
-        action: keep
+        regex: 'stack'
+        action: drop
 
       # Use container name without leading slash
       - source_labels: ['__meta_docker_container_name']
@@ -42,7 +45,7 @@ scrape_configs:
         target_label: 'stream'
 
     pipeline_stages:
-      # Try to parse as JSON
+      # Try to parse as JSON (drop parsing errors to avoid issues)
       - json:
           expressions:
             level: level
@@ -50,11 +53,8 @@ scrape_configs:
             trace_id: trace_id
             span_id: span_id
             timestamp: timestamp
+          drop_malformed: true
 
-      # If JSON parsing succeeds, use the message field as the log line
-      - output:
-          source: message
-
-      # Add parsed fields as labels (optional - be careful with cardinality)
+      # Add parsed fields as labels (only if they exist)
       - labels:
           level:

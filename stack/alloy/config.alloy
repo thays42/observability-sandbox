@@ -1,0 +1,78 @@
+// Discover all Docker containers
+discovery.docker "demo_apps" {
+  host = "unix:///var/run/docker.sock"
+}
+
+// Relabel and filter discovered containers
+discovery.relabel "demo_apps" {
+  targets = discovery.docker.demo_apps.targets
+
+  // Drop containers NOT from dice-roller or shiny-curl-gui projects
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = "(dice-roller|shiny-curl-gui)"
+    action        = "keep"
+  }
+
+  // Extract container name (remove leading slash)
+  rule {
+    source_labels = ["__meta_docker_container_name"]
+    regex         = "/(.*)"
+    target_label  = "container_name"
+  }
+
+  // Add compose project label
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    target_label  = "compose_project"
+  }
+
+  // Add compose service label
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "compose_service"
+  }
+
+  // Add job label (same as compose service)
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    target_label  = "job"
+  }
+}
+
+// Collect logs from discovered containers
+loki.source.docker "demo_apps" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.demo_apps.output
+  forward_to = [loki.process.demo_apps.receiver]
+}
+
+// Process logs: parse JSON and extract fields
+loki.process "demo_apps" {
+  forward_to = [loki.write.local.receiver]
+
+  // Parse JSON logs
+  stage.json {
+    expressions = {
+      level     = "level",
+      message   = "message",
+      trace_id  = "trace_id",
+      span_id   = "span_id",
+      timestamp = "timestamp",
+    }
+  }
+
+  // Extract level as a label (if it exists)
+  stage.labels {
+    values = {
+      level = "",
+    }
+  }
+}
+
+// Write logs to Loki
+loki.write "local" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
+}
