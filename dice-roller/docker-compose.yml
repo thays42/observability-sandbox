@@ -1,0 +1,19 @@
+services:
+  demo-fastapi-rolldice:
+    build:
+      dockerfile: Dockerfile
+    container_name: demo-fastapi-rolldice
+    ports:
+      - "8001:8001"
+    networks:
+      - monitoring
+    restart: unless-stopped
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
+        loki-external-labels: "job=demo-fastapi-rolldice,container_name=demo-fastapi-rolldice"
+
+networks:
+  monitoring:
+    external: true
