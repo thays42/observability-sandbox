@@ -14,6 +14,12 @@ services:
     networks:
       - monitoring
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "Rscript -e \"httr2::request('http://localhost:3838/') |> httr2::req_perform() |> httr2::resp_status()\" || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
     logging:
       driver: loki
       options:

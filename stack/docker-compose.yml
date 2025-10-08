@@ -13,6 +13,12 @@ services:
     networks:
       - monitoring
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9090/-/healthy || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     logging:
       driver: loki
       options:
@@ -31,6 +37,12 @@ services:
     networks:
       - monitoring
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   tempo:
     image: grafana/tempo:2.7.2
@@ -44,11 +56,12 @@ services:
     networks:
       - monitoring
     restart: unless-stopped
-    logging:
-      driver: loki
-      options:
-        loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
-        loki-external-labels: "job=tempo,container_name=tempo"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3200/ready || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.115.1
@@ -63,7 +76,14 @@ services:
       - monitoring
     restart: unless-stopped
     depends_on:
-      - tempo
+      tempo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "/otelcol-contrib", "validate", "--config=/etc/otelcol-contrib/config.yml"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     logging:
       driver: loki
       options:
@@ -83,7 +103,18 @@ services:
       - monitoring
     restart: unless-stopped
     depends_on:
-      - prometheus
+      prometheus:
+        condition: service_healthy
+      loki:
+        condition: service_healthy
+      tempo:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     logging:
       driver: loki
       options:

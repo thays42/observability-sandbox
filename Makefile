@@ -12,9 +12,9 @@ shiny-curl-gui:
 all: stack dice-roller shiny-curl-gui
 
 down:
-	docker compose --project-directory stack down
-	docker compose --project-directory dice-roller down
 	docker compose --project-directory shiny-curl-gui down
+	docker compose --project-directory dice-roller down
+	docker compose --project-directory stack down
 
 clean: down
 	docker volume rm stack_prometheus-data stack_loki-data stack_grafana-data 2>/dev/null || true

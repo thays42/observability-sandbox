@@ -2,11 +2,11 @@
 
 ### Structure
 - [X] Separate observability stack and demo apps into their own compose projects
-- [ ] Add healthchecks to each project...
+- [X] Add healthchecks to each project
 
 ### OpenTelemetry
-- [ ] Add OpenTelemetry to Python app
-- [ ] Add OpenTelemetry to R app
+- [X] Add OpenTelemetry to Python app
+- [X] Add OpenTelemetry to R app
 
 ### Loki
 - [X] Add loki
