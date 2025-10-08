@@ -132,8 +132,12 @@ server <- function(input, output, session) {
         # Build request based on HTTP method
         req <- request(input$url)
 
+        # Inject trace context into HTTP headers for distributed tracing
+        trace_headers <- otel::pack_http_context()
+
         resp <- req |>
           req_method(input$action) |>
+          req_headers(!!!trace_headers) |>
           req_perform()
 
         status_code <- resp_status(resp)
