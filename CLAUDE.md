@@ -21,7 +21,7 @@ The core observability infrastructure with its own [docker-compose.yml](stack/do
 - **Loki**: Log aggregation and storage (port 3100)
   - Configuration: [stack/loki/loki-config.yml](stack/loki/loki-config.yml)
   - Data persisted in `stack_loki-data` volume
-  - Receives logs from all containers via Docker Loki logging driver
+  - Receives logs from demo apps via Grafana Alloy
   - Retention: 744 hours (31 days)
 
 - **Tempo**: Distributed tracing storage (port 3200)
@@ -35,6 +35,13 @@ The core observability infrastructure with its own [docker-compose.yml](stack/do
   - Receives OTLP traces via gRPC (4317) and HTTP (4318)
   - Forwards traces to Tempo
   - Batch processing with memory limits
+
+- **Grafana Alloy**: Log collection agent (port 12345 for UI)
+  - Configuration: [stack/alloy/config.alloy](stack/alloy/config.alloy)
+  - Collects logs from dice-roller and shiny-curl-gui containers only
+  - Forwards logs to Loki with labels: container_name, compose_project, compose_service, job
+  - Parses JSON logs and extracts trace_id, span_id for correlation
+  - Uses discovery.docker for automatic container discovery with relabeling filters
 
 - **Grafana**: Metrics, logs, and traces visualization (port 3000)
   - Configuration: [stack/grafana/grafana.ini](stack/grafana/grafana.ini)
@@ -140,6 +147,7 @@ docker compose --project-directory stack restart grafana
 - Prometheus UI: http://localhost:9090
 - Loki API: http://localhost:3100 (ready check at http://localhost:3100/ready)
 - Tempo API: http://localhost:3200 (ready check at http://localhost:3200/ready)
+- Alloy UI: http://localhost:12345 (view discovered targets and config)
 - Grafana UI: http://localhost:3000 (Explore view for logs and traces)
 - Demo Dice Roller API: http://localhost:8001 (metrics at http://localhost:8001/metrics)
 - Shiny cURL GUI: http://localhost:8002
@@ -152,11 +160,17 @@ docker compose --project-directory stack restart grafana
 - Configuration is mounted read-only from host
 
 ### Loki
-- All containers send logs to Loki via Docker Loki logging driver
+- Demo apps send logs to Loki via Grafana Alloy
 - Logs queryable by labels: `container_name`, `job`, `compose_project`, `compose_service`
 - Configuration in [stack/loki/loki-config.yml](stack/loki/loki-config.yml)
 - 31-day retention period
-- IMPORTANT: Uses `host.docker.internal:3100` in logging driver config (not container network)
+
+### Grafana Alloy
+- Discovers Docker containers via Docker socket
+- Filters to collect logs only from dice-roller and shiny-curl-gui
+- Configuration in [stack/alloy/config.alloy](stack/alloy/config.alloy) using Alloy's River syntax
+- Automatic relabeling to add container_name, compose_project, compose_service, job labels
+- JSON log parsing to extract trace_id, span_id, level for trace-to-logs correlation
 
 ### Grafana
 - Datasources are provisioned automatically from [stack/grafana/provisioning/datasources/](stack/grafana/provisioning/datasources/)
@@ -182,15 +196,17 @@ To monitor a new application or service:
     - targets: ['my-app:8080']
 ```
 
-2. **For logs**: Add Loki logging driver to the service in your docker-compose.yml:
-```yaml
-my-app:
-  logging:
-    driver: loki
-    options:
-      loki-url: "http://host.docker.internal:3100/loki/api/v1/push"
-      loki-external-labels: "job=my-app,container_name=my-app"
-```
+2. **For logs**: Update Alloy configuration to include your app's compose project:
+   - Edit [stack/alloy/config.alloy](stack/alloy/config.alloy)
+   - In the `discovery.relabel` block, update the regex to include your project:
+   ```alloy
+   rule {
+     source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+     regex         = "(dice-roller|shiny-curl-gui|my-app)"  # Add your project
+     action        = "keep"
+   }
+   ```
+   - Restart Alloy: `docker compose --project-directory stack restart alloy`
 
 3. Add the service to the `monitoring` network:
 ```yaml
@@ -199,7 +215,7 @@ networks:
     external: true
 ```
 
-3. **For traces**: Configure OpenTelemetry in your application:
+4. **For traces**: Configure OpenTelemetry in your application:
 ```yaml
 my-app:
   environment:
@@ -213,11 +229,12 @@ my-app:
     - OTEL_R_TRACES_EXPORTER=http
 ```
 
-4. **For trace-to-logs correlation**: Add `trace_id` and `span_id` to your JSON logs:
+5. **For trace-to-logs correlation**: Add `trace_id` and `span_id` to your JSON logs:
    - **Python**: Use OpenTelemetry's trace context injection (see [dice-roller/main.py](dice-roller/main.py))
    - **R**: Use `span$get_context()$get_trace_id()` and `get_span_id()` (see [shiny-curl-gui/app.R](shiny-curl-gui/app.R))
+   - Alloy will automatically extract these fields if your logs are in JSON format
 
-5. Restart services: `docker compose --project-directory <your-app> up -d` and `docker compose --project-directory stack restart prometheus`
+6. Restart services: `docker compose --project-directory <your-app> up -d` and `docker compose --project-directory stack restart alloy`
 
 ## Viewing Traces
 
