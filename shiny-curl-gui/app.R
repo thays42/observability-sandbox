@@ -3,12 +3,37 @@ library(httr2)
 library(logger)
 library(uuid)
 library(jsonlite)
+# Note: Don't load library(otel) to avoid conflicts with logger package
+# Instead, use otel:: prefix for all otel functions
 
-# Configure logger with custom JSON layout (only level, session_id, message)
+# Note: otelsdk tracer provider is configured automatically via environment variables
+# OTEL_EXPORTER_OTLP_TRACES_ENDPOINT is read by otelsdk at startup
+
+# Get tracer for this application
+app_tracer <- otel::get_tracer("shiny-curl-gui")
+
+# Configure logger with custom JSON layout
 log_formatter(formatter_json)
 log_threshold(DEBUG)
 log_layout(layout_json_parser(fields = c("level")))
 
+# Helper function to get trace context from span object
+get_trace_context_from_span <- function(span) {
+  # Get context using the span's get_context() method
+  if (is.null(span)) {
+    return(NULL)
+  }
+
+  ctx <- span$get_context()
+  if (is.null(ctx)) {
+    return(NULL)
+  }
+
+  list(
+    trace_id = ctx$get_trace_id(),
+    span_id = ctx$get_span_id()
+  )
+}
 
 # Log application startup (no session_id at this point)
 log_info(msg = "Shiny application ready and accessible")
@@ -73,13 +98,34 @@ server <- function(input, output, session) {
       return("Error: URL cannot be empty")
     }
 
-    # Log HTTP request initiation
-    log_debug(
+    # Create initial span attributes
+    span_attrs <- list(
+      "http.method" = input$action,
+      "http.url" = input$url
+    )
+
+    # Create a span for the HTTP request with attributes
+    span <- otel::start_local_active_span(
+      paste0("HTTP ", input$action, " ", input$url),
+      tracer = app_tracer,
+      attributes = span_attrs
+    )
+
+    # Get trace context from the span for logging
+    trace_ctx <- get_trace_context_from_span(span)
+
+    # Log HTTP request initiation with trace context
+    log_args <- list(
       msg = "HTTP request initiated",
       session_id = session_id,
       method = input$action,
       url = input$url
     )
+    if (!is.null(trace_ctx)) {
+      log_args$trace_id <- trace_ctx$trace_id
+      log_args$span_id <- trace_ctx$span_id
+    }
+    do.call(log_debug, log_args)
 
     tryCatch(
       {
@@ -92,31 +138,29 @@ server <- function(input, output, session) {
 
         status_code <- resp_status(resp)
 
+        # Note: R otel package doesn't support setting attributes after span creation
+        # We'll add status_code in a future span or use events if needed
+
         # Log response with appropriate level based on status code
+        log_args <- list(
+          msg = "HTTP response received",
+          session_id = session_id,
+          method = input$action,
+          url = input$url,
+          status_code = status_code
+        )
+        if (!is.null(trace_ctx)) {
+          log_args$trace_id <- trace_ctx$trace_id
+          log_args$span_id <- trace_ctx$span_id
+        }
+
         if (status_code >= 500) {
-          log_error(
-            msg = "HTTP response received",
-            session_id = session_id,
-            method = input$action,
-            url = input$url,
-            status_code = status_code
-          )
+          # Note: R otel package doesn't have set_span_status yet
+          do.call(log_error, log_args)
         } else if (status_code >= 400) {
-          log_warn(
-            msg = "HTTP response received",
-            session_id = session_id,
-            method = input$action,
-            url = input$url,
-            status_code = status_code
-          )
+          do.call(log_warn, log_args)
         } else {
-          log_info(
-            msg = "HTTP response received",
-            session_id = session_id,
-            method = input$action,
-            url = input$url,
-            status_code = status_code
-          )
+          do.call(log_info, log_args)
         }
 
         # Format response

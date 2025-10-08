@@ -1,10 +1,16 @@
 services:
   shiny-curl-gui:
     build:
+      context: .
       dockerfile: Dockerfile
     container_name: shiny-curl-gui
     ports:
       - "8002:3838"
+    environment:
+      - OTEL_SERVICE_NAME=shiny-curl-gui
+      - OTEL_R_TRACES_EXPORTER=http
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4318/v1/traces
     networks:
       - monitoring
     restart: unless-stopped
