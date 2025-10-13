@@ -1,0 +1,42 @@
+networks:
+  monitoring:
+    external: true
+
+services:
+  dice-roller:
+    build: ./dice-roller
+    container_name: dice-roller-stage2
+    ports:
+      - "8101:8000"
+    environment:
+      - OTEL_SERVICE_NAME=dice-roller
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4318/v1/traces
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+    networks:
+      - monitoring
+    labels:
+      com.docker.compose.project: "stage2-dice-roller"
+      com.docker.compose.service: "dice-roller"
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: frontend-stage2
+    ports:
+      - "8102:8000"
+    environment:
+      - OTEL_SERVICE_NAME=frontend
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4318/v1/traces
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+    networks:
+      - monitoring
+    labels:
+      com.docker.compose.project: "stage2-frontend"
+      com.docker.compose.service: "frontend"
+    depends_on:
+      - dice-roller
+    restart: unless-stopped

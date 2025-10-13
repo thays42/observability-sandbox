@@ -1,0 +1,8 @@
+[project]
+name = "traffic-gen"
+version = "1.0.0"
+description = "Traffic generation script for dice roller API"
+requires-python = ">=3.13"
+dependencies = [
+    "httpx>=0.27.0",
+]

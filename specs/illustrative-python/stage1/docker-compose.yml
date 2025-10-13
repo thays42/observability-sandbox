@@ -1,0 +1,24 @@
+version: '3.8'
+
+networks:
+  monitoring:
+    external: true
+
+services:
+  dice-roller:
+    build: ./dice-roller
+    container_name: dice-roller-stage1
+    ports:
+      - "8100:8000"
+    environment:
+      - OTEL_SERVICE_NAME=dice-roller
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4318/v1/traces
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+    networks:
+      - monitoring
+    labels:
+      com.docker.compose.project: "stage1-dice-roller"
+      com.docker.compose.service: "dice-roller"
+    restart: unless-stopped

@@ -3,10 +3,48 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  - job_name: 'prometheus'
+  - job_name: "prometheus"
     static_configs:
-      - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
 
-  - job_name: 'demo-fastapi-rolldice'
+  - job_name: "demo-fastapi-rolldice"
     static_configs:
-      - targets: ['demo-fastapi-rolldice:8001']
+      - targets: ["demo-fastapi-rolldice:8001"]
+
+  - job_name: "dice-roller-stage1"
+    static_configs:
+      - targets: ["dice-roller-stage1:8000"]
+
+  - job_name: "dice-roller-stage2"
+    static_configs:
+      - targets: ["dice-roller-stage2:8000"]
+
+  - job_name: "frontend-stage2"
+    static_configs:
+      - targets: ["frontend-stage2:8000"]
+
+  # Stage 3 services
+  - job_name: "die-service-stage3"
+    static_configs:
+      - targets: ["die-service-stage3:8000"]
+
+  - job_name: "dice-roller-stage3"
+    static_configs:
+      - targets: ["dice-roller-stage3:8000"]
+
+  - job_name: "frontend-stage3"
+    static_configs:
+      - targets: ["frontend-stage3:8000"]
+
+  # Stage 4 services
+  - job_name: "die-service-stage4"
+    static_configs:
+      - targets: ["die-service-stage4:8000"]
+
+  - job_name: "dice-roller-stage4"
+    static_configs:
+      - targets: ["dice-roller-stage4:8000"]
+
+  - job_name: "frontend-stage4"
+    static_configs:
+      - targets: ["frontend-stage4:8000"]

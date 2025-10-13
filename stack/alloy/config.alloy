@@ -7,13 +7,6 @@ discovery.docker "demo_apps" {
 discovery.relabel "demo_apps" {
   targets = discovery.docker.demo_apps.targets
 
-  // Drop containers NOT from dice-roller or shiny-curl-gui projects
-  rule {
-    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
-    regex         = "(dice-roller|shiny-curl-gui)"
-    action        = "keep"
-  }
-
   // Extract container name (remove leading slash)
   rule {
     source_labels = ["__meta_docker_container_name"]
@@ -37,6 +30,13 @@ discovery.relabel "demo_apps" {
   rule {
     source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
     target_label  = "job"
+  }
+
+  // Filter to only include demo apps and stage services
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+    regex         = "(dice-roller|shiny-curl-gui|stage1|stage2|stage3|stage4)"
+    action        = "keep"
   }
 }
 

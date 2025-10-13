@@ -1,0 +1,10 @@
+{
+  "fair": {
+    "faces": [1, 2, 3, 4, 5, 6],
+    "error_rate": 0
+  },
+  "risky": {
+    "faces": [2, 3, 4, 5, 6, 7],
+    "error_rate": 0.1
+  }
+}
