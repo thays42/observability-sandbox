@@ -58,28 +58,6 @@ services:
       retries: 5
       start_period: 10s
 
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.115.1
-    container_name: otel-collector
-    ports:
-      - "4317:4317"   # OTLP gRPC (exposed for apps)
-      - "4318:4318"   # OTLP HTTP (exposed for apps)
-    volumes:
-      - ./otel-collector/otel-collector-config.yml:/etc/otelcol-contrib/config.yml
-    command: --config=/etc/otelcol-contrib/config.yml
-    networks:
-      - monitoring
-    restart: unless-stopped
-    depends_on:
-      tempo:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "/otelcol-contrib", "validate", "--config=/etc/otelcol-contrib/config.yml"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 5s
-
   alloy:
     image: grafana/alloy:latest
     container_name: alloy
@@ -89,11 +67,15 @@ services:
     command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
     ports:
       - "12345:12345"  # Alloy UI
+      - "4317:4317"    # OTLP gRPC (exposed for apps)
+      - "4318:4318"    # OTLP HTTP (exposed for apps)
     networks:
       - monitoring
     restart: unless-stopped
     depends_on:
       loki:
+        condition: service_healthy
+      tempo:
         condition: service_healthy
 
   grafana:
