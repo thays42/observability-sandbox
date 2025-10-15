@@ -16,6 +16,7 @@ scrape_configs:
       - targets: ["dice-roller-stage1:8000"]
 
   - job_name: "dice-roller-stage2"
+    scrape_interval: 5s
     static_configs:
       - targets: ["dice-roller-stage2:8000"]
 

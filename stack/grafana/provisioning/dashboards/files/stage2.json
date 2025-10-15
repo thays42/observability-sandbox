@@ -50,7 +50,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -199,7 +199,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -262,7 +262,7 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "sum by (die_type) (rate(dice_rolls_total{result=\"error\"}[1m]))",
+          "expr": "sum by (die_type) (rate(dice_rolls_total{job=~\"dice-roller-stage2|frontend-stage2\", result=\"error\"}[15s]))",
           "legendFormat": "{{die_type}}",
           "refId": "A"
         }
@@ -299,7 +299,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
