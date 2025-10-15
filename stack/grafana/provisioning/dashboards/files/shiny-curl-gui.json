@@ -22,10 +22,7 @@
   "links": [],
   "panels": [
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "gridPos": {
         "h": 8,
         "w": 24,
@@ -45,10 +42,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "editorMode": "code",
           "expr": "{container_name=\"shiny-curl-gui\"}",
           "queryType": "range",
@@ -59,10 +53,7 @@
       "type": "logs"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -107,10 +98,7 @@
       "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "editorMode": "code",
           "expr": "sum(count_over_time({container_name=\"shiny-curl-gui\"} [$__auto]))",
           "queryType": "range",
@@ -121,10 +109,7 @@
       "type": "heatmap"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -199,10 +184,7 @@
       "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "editorMode": "code",
           "expr": "sum(count_over_time({container_name=\"shiny-curl-gui\"} [$__auto]))",
           "queryType": "range",
@@ -213,10 +195,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -236,10 +215,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "editorMode": "code",
           "expr": "{container_name=\"shiny-curl-gui\"} | json | method != ``",
           "queryType": "range",
@@ -250,10 +226,7 @@
       "type": "logs"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -299,10 +272,7 @@
       "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "editorMode": "code",
           "expr": "sum by (method) (count_over_time({container_name=\"shiny-curl-gui\"} | json | method != `` [$__auto]))",
           "queryType": "range",
@@ -313,10 +283,7 @@
       "type": "piechart"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "gridPos": {
         "h": 8,
         "w": 12,
@@ -336,10 +303,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "editorMode": "code",
           "expr": "{container_name=\"shiny-curl-gui\"} | json | level =~ `WARN|ERROR`",
           "queryType": "range",
@@ -350,10 +314,7 @@
       "type": "logs"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -402,10 +363,7 @@
       "pluginVersion": "11.3.0",
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "editorMode": "code",
           "expr": "sum(count_over_time({container_name=\"shiny-curl-gui\"} | json | level =~ `WARN|ERROR` [$__auto]))",
           "queryType": "range",
@@ -416,10 +374,7 @@
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "gridPos": {
         "h": 8,
         "w": 24,
@@ -439,10 +394,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "editorMode": "code",
           "expr": "{container_name=\"shiny-curl-gui\"} | json | msg =~ `.*[Ss]ession.*`",
           "queryType": "range",

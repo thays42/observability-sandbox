@@ -35,10 +35,7 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -115,10 +112,7 @@
       "pluginVersion": "12.2.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "rate(http_requests_total{job=\"dice-roller-stage1\"}[1m])",
           "legendFormat": "{{method}} {{handler}} ({{status}})",
           "refId": "A"
@@ -128,10 +122,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -184,10 +175,7 @@
       "pluginVersion": "12.2.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "sum(rate(http_requests_total{job=\"dice-roller-stage1\",status!~\"5..\"}[5m])) / sum(rate(http_requests_total{job=\"dice-roller-stage1\"}[5m])) * 100",
           "refId": "A"
         }
@@ -196,10 +184,7 @@
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -276,10 +261,7 @@
       "pluginVersion": "12.2.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "sum by (die_type) (rate(dice_rolls_total{result=\"error\"}[1m]))",
           "legendFormat": "{{die_type}}",
           "refId": "A"
@@ -302,10 +284,7 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -382,28 +361,19 @@
       "pluginVersion": "12.2.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "histogram_quantile(0.50, sum by (le) (http_request_duration_seconds_bucket{job=\"dice-roller-stage1\",handler!=\"/metrics\"}))",
           "legendFormat": "P50",
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "histogram_quantile(0.95, sum by (le) (http_request_duration_seconds_bucket{job=\"dice-roller-stage1\",handler!=\"/metrics\"}))",
           "legendFormat": "P95",
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "histogram_quantile(0.99, sum by (le) (http_request_duration_seconds_bucket{job=\"dice-roller-stage1\",handler!=\"/metrics\"}))",
           "legendFormat": "P99",
           "refId": "C"
@@ -413,10 +383,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -502,10 +469,7 @@
       "pluginVersion": "12.2.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "avg by (handler) (http_request_duration_seconds_sum{job=\"dice-roller-stage1\",handler!=\"/metrics\"} / http_request_duration_seconds_count{job=\"dice-roller-stage1\",handler!=\"/metrics\"})",
           "legendFormat": "{{handler}}",
           "refId": "A"
@@ -528,10 +492,7 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -578,10 +539,7 @@
       "pluginVersion": "12.2.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "sum by (die_type) (dice_rolls_total)",
           "legendFormat": "{{die_type}}",
           "refId": "A"
@@ -591,10 +549,7 @@
       "type": "piechart"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -670,55 +625,37 @@
       "pluginVersion": "12.2.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"1.0\"} / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"fair\"}",
           "legendFormat": "Value 1",
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"2.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"1.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"fair\"}",
           "legendFormat": "Value 2",
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"3.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"2.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"fair\"}",
           "legendFormat": "Value 3",
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"4.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"3.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"fair\"}",
           "legendFormat": "Value 4",
           "refId": "D"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"5.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"4.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"fair\"}",
           "legendFormat": "Value 5",
           "refId": "E"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"6.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"fair\",le=\"5.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"fair\"}",
           "legendFormat": "Value 6",
           "refId": "F"
@@ -728,10 +665,7 @@
       "type": "timeseries"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "prometheus"
-      },
+      "datasource": "Prometheus",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -807,55 +741,37 @@
       "pluginVersion": "12.2.0",
       "targets": [
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"2.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"1.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"risky\"}",
           "legendFormat": "Value 2",
           "refId": "A"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"3.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"2.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"risky\"}",
           "legendFormat": "Value 3",
           "refId": "B"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"4.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"3.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"risky\"}",
           "legendFormat": "Value 4",
           "refId": "C"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"5.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"4.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"risky\"}",
           "legendFormat": "Value 5",
           "refId": "D"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"6.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"5.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"risky\"}",
           "legendFormat": "Value 6",
           "refId": "E"
         },
         {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "prometheus"
-          },
+          "datasource": "Prometheus",
           "expr": "(dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"7.0\"} - ignoring(le) dice_roll_value_bucket{job=\"dice-roller-stage1\",die_type=\"risky\",le=\"6.0\"}) / ignoring(le) dice_roll_value_count{job=\"dice-roller-stage1\",die_type=\"risky\"}",
           "legendFormat": "Value 7",
           "refId": "F"
@@ -878,10 +794,7 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -905,10 +818,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "expr": "{container_name=\"dice-roller-stage1\"} | json",
           "refId": "A"
         }
@@ -917,10 +827,7 @@
       "type": "logs"
     },
     {
-      "datasource": {
-        "type": "loki",
-        "uid": "loki"
-      },
+      "datasource": "Loki",
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -944,10 +851,7 @@
       },
       "targets": [
         {
-          "datasource": {
-            "type": "loki",
-            "uid": "loki"
-          },
+          "datasource": "Loki",
           "expr": "{container_name=\"dice-roller-stage1\"} | json | level=\"ERROR\"",
           "refId": "A"
         }
