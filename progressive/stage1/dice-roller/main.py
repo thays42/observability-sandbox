@@ -48,7 +48,7 @@ logger.setLevel(logging.INFO)
 
 # Initialize OpenTelemetry tracing
 trace.set_tracer_provider(TracerProvider())
-otlp_exporter = OTLPSpanExporter(endpoint="http://otel-collector:4318/v1/traces")
+otlp_exporter = OTLPSpanExporter(endpoint="http://alloy:4318/v1/traces")
 trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
 tracer = trace.get_tracer(__name__)
 
