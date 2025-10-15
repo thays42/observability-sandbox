@@ -10,7 +10,9 @@
       "Bash(docker compose logs:*)",
       "Bash(docker kill:*)",
       "Bash(docker compose:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebSearch",
+      "Bash(xargs ls:*)"
     ],
     "deny": [],
     "ask": []
