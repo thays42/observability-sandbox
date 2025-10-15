@@ -50,7 +50,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -189,7 +189,7 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "sum by (identifier) (die_specifications_requested_total)",
+          "expr": "sum by (identifier) (die_specifications_requested_total{job=\"die-service-stage4\"})",
           "legendFormat": "{{identifier}}",
           "refId": "A"
         }
@@ -213,7 +213,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -325,7 +325,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -388,7 +388,7 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "rate(die_service_requests_total[1m])",
+          "expr": "rate(die_service_requests_total{job=\"die-service-stage4\"}[1m])",
           "legendFormat": "{{status}}",
           "refId": "A"
         }
@@ -412,7 +412,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -476,7 +476,7 @@
         {
           "datasource": "Prometheus",
           "expr": "rate(die_service_requests_total{status=~\"error.*\"}[1m])",
-          "legendFormat": "{{status}}",
+          "legendFormat": "{{identifier}}",
           "refId": "A"
         }
       ],
@@ -499,7 +499,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -599,7 +599,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -748,7 +748,7 @@
             "barAlignment": 0,
             "barWidthFactor": 0.6,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -846,7 +846,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -982,7 +982,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -1041,7 +1041,7 @@
       "targets": [
         {
           "datasource": "Prometheus",
-          "expr": "rate(dice_rolls_total{result=\"error\"}[1m])",
+          "expr": "rate(dice_rolls_total{job=\"dice-roller-stage4\",result=\"error\"}[1m])",
           "legendFormat": "{{die_type}}",
           "refId": "A"
         }

@@ -55,13 +55,6 @@ tracer = trace.get_tracer(__name__)
 # Create FastAPI app
 app = FastAPI(title="Dice Roller API", version="1.0.0")
 
-
-# Instrument FastAPI for automatic tracing, excluding /metrics endpoint
-def exclude_metrics_endpoint(scope):
-    """Exclude /metrics endpoint from tracing"""
-    return scope.get("path") == "/metrics"
-
-
 FastAPIInstrumentor.instrument_app(app, excluded_urls="/metrics")
 
 # Instrument with Prometheus

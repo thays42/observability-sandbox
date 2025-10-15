@@ -46,7 +46,7 @@ async def simulate_user(user_id: int, num_requests: int):
     """Simulate a single user making multiple requests through frontend."""
     async with httpx.AsyncClient(timeout=30.0) as client:
         for request_num in range(num_requests):
-            die_type = random.choice(["fair", "risky"])
+            die_type = random.choice(["fair", "risky", "extreme", "unknown"])
 
             # Decide whether to use async rolling
             use_async = random.random() < ASYNC_PROBABILITY
