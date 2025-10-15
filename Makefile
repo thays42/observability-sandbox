@@ -9,8 +9,6 @@ dice-roller:
 shiny-curl-gui:
 	docker compose --project-directory shiny-curl-gui up -d
 
-all: stack dice-roller shiny-curl-gui
-
 down:
 	docker compose --project-directory shiny-curl-gui down
 	docker compose --project-directory dice-roller down

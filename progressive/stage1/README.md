@@ -146,7 +146,7 @@ python generate_traffic.py
 
 **Framework**: OpenTelemetry with automatic FastAPI instrumentation
 
-**Exporter**: OTLP HTTP to `otel-collector:4318`
+**Exporter**: OTLP HTTP to `alloy:4318`
 
 **Service Name**: `dice-roller`
 
@@ -293,7 +293,7 @@ docker compose --project-directory stack restart alloy
 docker compose --project-directory stack logs otel-collector
 
 # Check dice-roller can reach OTel Collector
-docker exec dice-roller-stage1 curl -v http://otel-collector:4318/v1/traces
+docker exec dice-roller-stage1 curl -v http://alloy:4318/v1/traces
 
 # Verify OTEL environment variables are set
 docker exec dice-roller-stage1 env | grep OTEL

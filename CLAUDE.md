@@ -220,8 +220,8 @@ networks:
 my-app:
   environment:
     - OTEL_SERVICE_NAME=my-app
-    - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
-    - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4318/v1/traces
+    - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318
+    - OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://alloy:4318/v1/traces
     # For Python apps with automatic instrumentation:
     - OTEL_TRACES_EXPORTER=otlp
     - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf

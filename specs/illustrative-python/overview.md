@@ -53,11 +53,11 @@ This endpoint simulates the rolling of a 6-sided die. It returns roll as a JSON 
 
 **Traces:**
 - Use OpenTelemetry automatic instrumentation for FastAPI (`opentelemetry-instrumentation-fastapi`)
-- Export traces via OTLP HTTP to OpenTelemetry Collector at `http://otel-collector:4318`
+- Export traces via OTLP HTTP to OpenTelemetry Collector at `http://alloy:4318`
 - Environment variables:
   - `OTEL_SERVICE_NAME=dice-roller`
-  - `OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318`
-  - `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://otel-collector:4318/v1/traces`
+  - `OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318`
+  - `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=http://alloy:4318/v1/traces`
   - `OTEL_TRACES_EXPORTER=otlp`
   - `OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf`
 - Automatic span creation for HTTP requests
@@ -148,7 +148,7 @@ In this stage, we add a Streamlit frontend that can be used to to interact with 
 - Export traces via OTLP HTTP to OpenTelemetry Collector
 - Environment variables (same as Stage 1):
   - `OTEL_SERVICE_NAME=streamlit-frontend`
-  - `OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318`
+  - `OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318`
   - `OTEL_TRACES_EXPORTER=otlp`
   - `OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf`
 - Create span for each button click → backend request

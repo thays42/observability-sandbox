@@ -19,7 +19,7 @@ from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 # Initialize tracing
 trace.set_tracer_provider(TracerProvider())
-otlp_exporter = OTLPSpanExporter(endpoint="http://otel-collector:4318/v1/traces")
+otlp_exporter = OTLPSpanExporter(endpoint="http://alloy:4318/v1/traces")
 trace.get_tracer_provider().add_span_processor(BatchSpanProcessor(otlp_exporter))
 
 # Create FastAPI app
@@ -182,7 +182,7 @@ services:
       - "8100:8000"
     environment:
       - OTEL_SERVICE_NAME=dice-roller
-      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4318
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://alloy:4318
       - OTEL_TRACES_EXPORTER=otlp
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
     networks:
