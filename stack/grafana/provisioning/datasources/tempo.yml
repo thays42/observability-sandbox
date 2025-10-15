@@ -5,13 +5,13 @@ datasources:
     type: tempo
     access: proxy
     url: http://tempo:3200
-    editable: false
+    editable: true
     jsonData:
       tracesToLogsV2:
-        datasourceUid: "loki"
-        spanStartTimeShift: "-1h"
-        spanEndTimeShift: "1h"
+        datasourceUid: "Loki"
+        spanStartTimeShift: "-10m"
+        spanEndTimeShift: "10m"
         filterByTraceID: true
         filterBySpanID: false
         customQuery: true
-        query: '{job=~".+"} | json | trace_id=`${__trace.traceId}`'
+        query: '{job=~".+"} | json | trace_id="$${__trace.traceId}"'
