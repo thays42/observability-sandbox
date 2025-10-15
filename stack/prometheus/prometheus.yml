@@ -49,3 +49,20 @@ scrape_configs:
   - job_name: "frontend-stage4"
     static_configs:
       - targets: ["frontend-stage4:8000"]
+
+  # Stage 5 services
+  - job_name: "postgres-exporter-stage5"
+    static_configs:
+      - targets: ["postgres-exporter-stage5:9187"]
+
+  - job_name: "die-service-stage5"
+    static_configs:
+      - targets: ["die-service-stage5:8000"]
+
+  - job_name: "dice-roller-stage5"
+    static_configs:
+      - targets: ["dice-roller-stage5:8000"]
+
+  - job_name: "frontend-stage5"
+    static_configs:
+      - targets: ["frontend-stage5:8000"]
