@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is an observability stack built with Docker Compose, consisting of Prometheus for metrics collection, Loki for log aggregation, Tempo for distributed tracing, and Grafana for visualization. The stack is designed for monitoring applications and infrastructure with full observability (metrics, logs, and traces).
 
 The project includes:
-- **Core observability stack** (`stack/`) - Prometheus, Loki, Tempo, Grafana, Alloy, PostgreSQL for usage stats
+- **Core observability stack** (`stack/`) - Prometheus, Loki, Tempo, Grafana, Alloy, Node Exporter, cAdvisor, PostgreSQL for usage stats
 - **Demo applications** - dice-roller (Python/FastAPI), shiny-curl-gui (R/Shiny)
 - **Progressive tutorial** (`progressive/stage1-5/`) - Five-stage tutorial series demonstrating increasing complexity
 - **Specifications** (`specs/`) - Design docs for tutorial stages and usage tracking
@@ -48,6 +48,18 @@ The core observability infrastructure with its own [docker-compose.yml](stack/do
     - Forwards traces to Tempo via OTLP
   - Filter regex currently includes: `(dice-roller|shiny-curl-gui|stage1|stage2|stage3|stage4|stage5)`
 
+- **Node Exporter**: System metrics exporter (port 9100)
+  - Exposes host system metrics (CPU, memory, disk, network)
+  - Runs with host PID namespace for accurate host metrics
+  - Mounts root filesystem at /host for comprehensive monitoring
+  - Pre-configured Grafana dashboard: Node Exporter Full (ID 1860)
+
+- **cAdvisor**: Container metrics exporter (port 8080)
+  - Monitors all Docker containers on the host
+  - Exposes container resource usage and performance metrics
+  - Requires privileged mode for full container access
+  - Pre-configured Grafana dashboard: cAdvisor Exporter (ID 14282)
+
 - **Grafana**: Metrics, logs, and traces visualization (port 3000)
   - Configuration: [stack/grafana/grafana.ini](stack/grafana/grafana.ini)
   - Datasource provisioning: [stack/grafana/provisioning/datasources/](stack/grafana/provisioning/datasources/)
@@ -55,6 +67,7 @@ The core observability infrastructure with its own [docker-compose.yml](stack/do
   - Pre-configured with Prometheus (default), Loki, and Tempo datasources
   - Trace-to-logs correlation enabled via custom query
   - Anonymous viewing enabled, admin credentials: admin/admin
+  - Provisioned dashboards: Node Exporter, cAdvisor, and stage-specific dashboards
 
 - **PostgreSQL**: Usage statistics database (port 5433 on host, 5432 in container)
   - Container: postgres-usage-stats
@@ -206,6 +219,8 @@ docker compose --project-directory stack restart grafana
 - Loki API: http://localhost:3100 (ready check at http://localhost:3100/ready)
 - Tempo API: http://localhost:3200 (ready check at http://localhost:3200/ready)
 - Alloy UI: http://localhost:12345 (view discovered targets and config)
+- Node Exporter: http://localhost:9100/metrics
+- cAdvisor: http://localhost:8080 (UI and metrics)
 - Grafana UI: http://localhost:3000 (admin/admin)
 - PostgreSQL: localhost:5433 (usage_stats database)
 
