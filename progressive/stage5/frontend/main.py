@@ -155,6 +155,18 @@ async def startup_event():
 async def root():
     """Serve a simple HTML UI with async rolling support."""
 
+    # Emit usage log for page load
+    logger.info(
+        "Frontend page loaded",
+        extra={
+            "extra_fields": {
+                "usage": True,
+                "event_type": "page_load",
+                "page": "/"
+            }
+        }
+    )
+
     # Fetch fresh die types from die service
     fetch_available_die_types()
 

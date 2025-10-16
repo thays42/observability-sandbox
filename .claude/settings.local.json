@@ -12,7 +12,9 @@
       "Bash(docker compose:*)",
       "Bash(curl:*)",
       "WebSearch",
-      "Bash(xargs ls:*)"
+      "Bash(xargs ls:*)",
+      "Bash(docker stop:*)",
+      "Bash(docker rm:*)"
     ],
     "deny": [],
     "ask": []

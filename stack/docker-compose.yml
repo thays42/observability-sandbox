@@ -78,6 +78,51 @@ services:
       tempo:
         condition: service_healthy
 
+  postgres-usage-stats:
+    image: postgres:17
+    container_name: postgres-usage-stats
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: usage_stats
+    volumes:
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - monitoring
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  usage-stats-scraper:
+    build:
+      context: ../usage-stats-receiver
+      dockerfile: Dockerfile
+    container_name: usage-stats-scraper
+    environment:
+      LOKI_URL: http://loki:3100
+      POSTGRES_HOST: postgres-usage-stats
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: usage_stats
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POLL_INTERVAL_SECONDS: 60
+      LOOKBACK_MINUTES: 2
+    networks:
+      - monitoring
+    restart: unless-stopped
+    depends_on:
+      postgres-usage-stats:
+        condition: service_healthy
+      loki:
+        condition: service_healthy
+
   grafana:
     image: grafana/grafana:12.2
     container_name: grafana
@@ -109,6 +154,7 @@ volumes:
   loki-data:
   grafana-data:
   tempo-data:
+  postgres-data:
 
 networks:
   monitoring:
